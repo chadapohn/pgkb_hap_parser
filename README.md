@@ -1,4 +1,4 @@
-# allele-definition-table-scraper
+# PharmGKB Haplotype Table Parser
 
 # PharmGKB_Haplotypes_GRCh38.tsv
 gene|name|symbol|chrom|refseq_chrom_id|refseq_gene_id|refseq_protein_id|last_modified_date|num_variants|footnotes
