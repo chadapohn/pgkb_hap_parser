@@ -1,10 +1,7 @@
 # PharmGKB Haplotype Table Parser
 
 # PharmGKB_Haplotypes_GRCh38.tsv
-gene|name|symbol|num_variants
-
-# PharmGKB_Haplotypes_Alleles_GRCh38.tsv
-gene|name|symbol|variants_ids|alleles|variant_types|chrom_hgvs_names|gene_hgvs_names|protein_hgvs_names
+chrom|refseq_chrom_id|gene_symbol|name|num_variants|chrom_hgvs_name|rsid|alleles
 
 # TODO: Add these attributes to gene_details table in gemini
 - chrom
