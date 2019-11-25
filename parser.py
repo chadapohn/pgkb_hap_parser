@@ -17,6 +17,10 @@ VARIANT_COL = 2
 IN_OR_DEL_PATTERN = r"^[cgp]\.(\d+\_\d+).*$"
 SNP_PATTERN = r"^[cgp]\.(\d+).*$"
 
+RSID_ROW = 5
+RSID_COL = 2
+RSID_PATTERN = r"rs\d+"
+
 def parse_gene(gene_cell):
     gene = None
     match = re.match(GENE_PATTERN, gene_cell)
@@ -60,7 +64,20 @@ def parse_variants(variant_cells, num_variants):
         ends.append(end)
 
     return chrom_hgvs_names, starts, ends
-        
+
+def parse_rsids(rsid_cells, num_variants):
+    rsids = []
+    for rsid_idx in range(RSID_COL, num_variants):
+        rsid = rsid_cells.loc[rsid_idx]
+        if pd.notna(rsid):
+            match = re.match(RSID_PATTERN, rsid)
+            if match:
+                rsid = match.group()
+        else:
+            rsid = None
+        rsids.append(rsid)
+
+    return rsids
 
 if __name__ == "__main__":
     definition_file = path.join(HAPLOTYPE_TABLE_DIR, "G6PD_allele_definition_table.xlsx")
@@ -69,4 +86,5 @@ if __name__ == "__main__":
     chrom = parse_chrom(definition_table.iloc[CHROM_ROW][CHROM_COL])
     num_variants = definition_table.iloc[CHROM_ROW].count() - 1
     chrom_hgvs_names, starts, ends = parse_variants(definition_table.iloc[VARIANT_ROW, VARIANT_COL:num_variants+VARIANT_COL], num_variants)
-   
+    rsids = parse_rsids(definition_table.iloc[RSID_ROW, RSID_COL:num_variants+RSID_COL], num_variants)
+    
