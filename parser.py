@@ -85,15 +85,30 @@ def parse_rsids(rsid_cells, num_variants):
 
 def parse_alleles(allele_cells, num_variants):
     allele_cells.reset_index(inplace=True, drop=True)
+    var_types = []
     for col_idx in range(2, num_variants):
         ref_allele = allele_cells.iloc[0, col_idx]
         allele_cells.iloc[:, col_idx] = allele_cells.iloc[:, col_idx].replace({np.nan: ref_allele})
+
+        var_type = "SNP"
+        allele_col = allele_cells.iloc[:, col_idx]
+        startswith_del_alleles = set(allele_col.loc[allele_col.str.startswith("del")])
+        if len(startswith_del_alleles) > 0:
+            # print(ref_allele)
+            # print(startswith_del_alleles)
+            for a in startswith_del_alleles:
+                if a != "delGene":
+                    if ref_allele == a:
+                        var_type = "INS"
+                    else: var_type = ("DEL")
+                    break
+        var_types.append(var_type)
 
     haps = allele_cells.groupby(allele_cells.columns[0])[allele_cells.columns[2:]].apply(lambda col: ','.join(map(str, col.values)))
     haps.index.names = [None] 
     haps = haps.reset_index()
     haps.columns = ['name', 'alleles']
-    return haps
+    return haps, var_types
 
 if __name__ == "__main__":
     definition_file = path.join(HAPLOTYPE_TABLE_DIR, "G6PD_allele_definition_table.xlsx")
@@ -103,5 +118,6 @@ if __name__ == "__main__":
     num_variants = definition_table.iloc[CHROM_ROW].count() - 1
     chrom_hgvs_names, starts, ends = parse_variants(definition_table.iloc[VARIANT_ROW, VARIANT_COL:num_variants+VARIANT_COL], num_variants)
     rsids = parse_rsids(definition_table.iloc[RSID_ROW, RSID_COL:num_variants+RSID_COL], num_variants)
-    haps = parse_alleles(definition_table.iloc[HAP_ROW:, HAP_COL:num_variants+1], num_variants)
+    haps, var_types = parse_alleles(definition_table.iloc[HAP_ROW:, HAP_COL:num_variants+1], num_variants)
     # print(haps.loc[haps['name'] == "Hektoen"])
+    
