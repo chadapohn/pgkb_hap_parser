@@ -21,6 +21,9 @@ RSID_ROW = 5
 RSID_COL = 2
 RSID_PATTERN = r"rs\d+"
 
+HAP_ROW = 7
+HAP_COL = 0
+
 def parse_gene(gene_cell):
     gene = None
     match = re.match(GENE_PATTERN, gene_cell)
@@ -79,6 +82,14 @@ def parse_rsids(rsid_cells, num_variants):
 
     return rsids
 
+def parse_alleles(allele_cells):
+    haps = allele_cells.groupby(allele_cells.columns[0])[allele_cells.columns[2:]].apply(lambda col: ','.join(map(str, col.values)))
+    haps = haps[:-1]
+    haps.index.names = [None] 
+    haps = haps.reset_index()
+    haps.columns = ['name', 'alleles']
+    return haps
+
 if __name__ == "__main__":
     definition_file = path.join(HAPLOTYPE_TABLE_DIR, "G6PD_allele_definition_table.xlsx")
     definition_table = pd.read_excel(definition_file, header=None)
@@ -87,4 +98,5 @@ if __name__ == "__main__":
     num_variants = definition_table.iloc[CHROM_ROW].count() - 1
     chrom_hgvs_names, starts, ends = parse_variants(definition_table.iloc[VARIANT_ROW, VARIANT_COL:num_variants+VARIANT_COL], num_variants)
     rsids = parse_rsids(definition_table.iloc[RSID_ROW, RSID_COL:num_variants+RSID_COL], num_variants)
+    haps = parse_alleles(definition_table.iloc[HAP_ROW:, HAP_COL:num_variants+1])
     
