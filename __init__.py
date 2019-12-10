@@ -1,0 +1,1 @@
+from pgkb_hap_parser.parser import parse_gene
