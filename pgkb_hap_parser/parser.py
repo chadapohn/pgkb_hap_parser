@@ -23,8 +23,8 @@ CHROM_PATTERN = r"^.*N\w_\s*(\d+)\.\d+"
 VARIANT_ROW = 3
 VARIANT_COL = 1
 SNP_PATTERN = r"^[cgp]\.(\d+)[A-Z]>[A-Z]"
-SNP_INS_PATTERN = r"^[cgp]\.(\w+)ins\[A-Z]*"
-SNP_DEL_PATTERN = r"^[cgp]\.(\w+)del[A-Z]*"
+SNP_INS_PATTERN = r"^[cgp]\.(\d+)_?(\d*)ins[A-Z]*"
+SNP_DEL_PATTERN = r"^[cgp]\.(\d+)_?(\d*)del[A-Z]*"
 SNP_REPEAT_PATTERN = r"^[cgp]\.(\d+)"
 # SV_DEL_PATTERN = r"^delGene$"
 

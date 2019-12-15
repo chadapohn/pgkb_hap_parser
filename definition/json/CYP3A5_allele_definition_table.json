@@ -48,7 +48,7 @@
             "chromosome": "chr7",
             "position": 99652770,
             "chrom_hgvs_name": "g.99652770_99652771insA",
-            "type": "SNP",
+            "type": "INS",
             "rsid": "rs41303343"
         },
         {

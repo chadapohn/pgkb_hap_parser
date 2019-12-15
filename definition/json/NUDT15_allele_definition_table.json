@@ -34,14 +34,14 @@
             "chromosome": "chr13",
             "position": 48037801,
             "chrom_hgvs_name": "g.48037801_48037802insGAGTCG",
-            "type": "SNP",
+            "type": "INS",
             "rsid": "rs869320766"
         },
         {
             "chromosome": "chr13",
             "position": 48037826,
             "chrom_hgvs_name": "g.48037826_48037827insCGGG",
-            "type": "SNP",
+            "type": "INS",
             "rsid": "rs777311140"
         },
         {
@@ -90,7 +90,7 @@
             "chromosome": "chr13",
             "position": 48041103,
             "chrom_hgvs_name": "g.48041103_48041104insG",
-            "type": "SNP",
+            "type": "INS",
             "rsid": "rs761191455"
         },
         {
