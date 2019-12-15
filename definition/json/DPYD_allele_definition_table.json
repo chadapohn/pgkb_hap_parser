@@ -68,7 +68,7 @@
         {
             "chromosome": "chr1",
             "position": 97740415,
-            "chrom_hgvs_name": "g.97740415delATGA",
+            "chrom_hgvs_name": "g.97740415_97740418delATGA",
             "type": "DEL",
             "rsid": "rs72549309"
         },
