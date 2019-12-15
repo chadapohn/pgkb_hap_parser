@@ -1,0 +1,29 @@
+{
+    "gene": "IFNL3",
+    "chromosome": "chr19",
+    "variants": [
+        {
+            "chromosome": "chr19",
+            "position": 39248147,
+            "chrom_hgvs_name": "g.39248147C>T",
+            "type": "SNP",
+            "rsid": "rs12979860"
+        }
+    ],
+    "named_alleles": [
+        {
+            "name": "rs12979860 reference (C) ",
+            "function": null,
+            "alleles": {
+                "39248147": "C"
+            }
+        },
+        {
+            "name": "rs12979860 variant (T)",
+            "function": null,
+            "alleles": {
+                "39248147": "T"
+            }
+        }
+    ]
+}

@@ -1,0 +1,3 @@
+name	alleles	gene	chrom	num_variants	starts	ends	chrom_hgvs_names	rsids	types
+rs12979860 reference (C) 		IFNL3	chr19	1	39248146	39248147	g.39248147C>T	rs12979860	SNP
+rs12979860 variant (T)		IFNL3	chr19	1	39248146	39248147	g.39248147C>T	rs12979860	SNP

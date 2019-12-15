@@ -197,6 +197,13 @@
             "chrom_hgvs_name": "g.21239145C>T",
             "type": "SNP",
             "rsid": "rs200995543"
+        },
+        {
+            "chromosome": "chr12",
+            "position": 21239158,
+            "chrom_hgvs_name": "g.21239158C>T",
+            "type": "SNP",
+            "rsid": "rs140790673"
         }
     ],
     "named_alleles": [

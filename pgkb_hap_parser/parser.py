@@ -148,7 +148,7 @@ def parse_variants(variant_cells, num_variants):
 
 def parse_rsids(rsid_cells, num_variants):
     rsids = []
-    for rsid_idx in range(RSID_COL, num_variants):
+    for rsid_idx in range(RSID_COL, num_variants + 1):
         rsid = rsid_cells.loc[rsid_idx]
         if pd.notna(rsid):
             match = re.match(RSID_PATTERN, rsid)
@@ -164,8 +164,13 @@ def parse_alleles(allele_cells, num_variants):
     allele_cells.reset_index(inplace=True, drop=True)
     #var_types =
 
-    hap_end_row = allele_cells.index[allele_cells.iloc[:, 0] == "NOTES:"].values.item(0)
-    allele_cells = allele_cells[:hap_end_row-1]
+    
+    if allele_cells.iloc[:, 0].str.contains("NOTES").eq(False).all():
+        hap_end_row = len(allele_cells.index)
+    else:
+        hap_end_row = allele_cells.index[allele_cells.iloc[:, 0] == "NOTES:"].values.item(0) - 1
+   
+    allele_cells = allele_cells[:hap_end_row]
     for col_idx in range(VARIANT_COL, num_variants + VARIANT_COL):
         ref_allele = allele_cells.loc[0, col_idx]
         allele_cells.iloc[:, col_idx] = allele_cells.iloc[:, col_idx].replace({np.nan: ref_allele})
@@ -217,7 +222,6 @@ def parse():
         chrom = parse_chrom(definition_table.iloc[CHROM_ROW][CHROM_COL])
         num_variants = definition_table.iloc[CHROM_ROW, VARIANT_COL:].count()
         chrom_hgvs_names, starts, ends, var_types = parse_variants(definition_table.iloc[VARIANT_ROW, VARIANT_COL:], num_variants)
-        print("variants" + " = " + str(definition_table.iloc[VARIANT_ROW, VARIANT_COL:].count()))
         
         rsids = parse_rsids(definition_table.iloc[RSID_ROW, RSID_COL:num_variants+RSID_COL], num_variants)
         haps = parse_alleles(definition_table.iloc[HAP_ROW:, HAP_COL:num_variants + VARIANT_COL], num_variants)
@@ -242,7 +246,6 @@ def parse():
 
         # variants
         global positions
-        print("positions" + "=" + str(len(positions)))
         chrom_hgvs_names = chrom_hgvs_names.split(",")
         var_types = var_types.split(",")
         rsids = rsids.split(",")
@@ -255,7 +258,8 @@ def parse():
                 "type": vtype,
                 "rsid": rsid
             })
-        
+        print("variants = " + str(len(variants)))
+  
         # named_alleles
         global hap_names
         hap_names = hap_names.values.tolist()

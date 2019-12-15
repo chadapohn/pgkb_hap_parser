@@ -1,0 +1,46 @@
+{
+    "gene": "CACNA1S",
+    "chromosome": "chr1",
+    "variants": [
+        {
+            "chromosome": "chr1",
+            "position": 201091993,
+            "chrom_hgvs_name": "g.201091993G>A",
+            "type": "SNP",
+            "rsid": "rs772226819"
+        },
+        {
+            "chromosome": "chr1",
+            "position": 201060815,
+            "chrom_hgvs_name": "g.201060815C>T",
+            "type": "SNP",
+            "rsid": "rs1800559"
+        }
+    ],
+    "named_alleles": [
+        {
+            "name": "Reference",
+            "function": null,
+            "alleles": {
+                "201091993": "G",
+                "201060815": "C"
+            }
+        },
+        {
+            "name": "c.520C>T",
+            "function": null,
+            "alleles": {
+                "201091993": "A",
+                "201060815": "C"
+            }
+        },
+        {
+            "name": "c.3257G>A",
+            "function": null,
+            "alleles": {
+                "201091993": "G",
+                "201060815": "T"
+            }
+        }
+    ]
+}

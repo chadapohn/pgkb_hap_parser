@@ -29,6 +29,13 @@
             "chrom_hgvs_name": "g.233760498G>A",
             "type": "SNP",
             "rsid": "rs4148323"
+        },
+        {
+            "chromosome": "chr2",
+            "position": 233760973,
+            "chrom_hgvs_name": "g.233760973C>A",
+            "type": "SNP",
+            "rsid": "rs35350960"
         }
     ],
     "named_alleles": [

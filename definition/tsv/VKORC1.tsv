@@ -1,0 +1,3 @@
+name	alleles	gene	chrom	num_variants	starts	ends	chrom_hgvs_names	rsids	types
+rs9923231 reference (C)		VKORC1	chr16	1	31096367	31096368	g.31096368C>T	rs9923231	SNP
+rs9923231 variant (T)		VKORC1	chr16	1	31096367	31096368	g.31096368C>T	rs9923231	SNP

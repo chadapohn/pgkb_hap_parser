@@ -1149,6 +1149,13 @@
             "chrom_hgvs_name": "g.154532082G>A",
             "type": "SNP",
             "rsid": ""
+        },
+        {
+            "chromosome": "chrX",
+            "position": 154532058,
+            "chrom_hgvs_name": "g.154532058_154532060delTTC",
+            "type": "DEL",
+            "rsid": ""
         }
     ],
     "named_alleles": [

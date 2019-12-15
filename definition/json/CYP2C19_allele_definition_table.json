@@ -225,6 +225,13 @@
             "chrom_hgvs_name": "g.94852785C>G",
             "type": "SNP",
             "rsid": "rs118203759"
+        },
+        {
+            "chromosome": "chr10",
+            "position": 94852914,
+            "chrom_hgvs_name": "g.94852914A>C",
+            "type": "SNP",
+            "rsid": "rs55640102"
         }
     ],
     "named_alleles": [

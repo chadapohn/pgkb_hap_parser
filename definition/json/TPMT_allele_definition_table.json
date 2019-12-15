@@ -267,6 +267,13 @@
             "chrom_hgvs_name": "g.18130694T>C",
             "type": "SNP",
             "rsid": "rs150900439"
+        },
+        {
+            "chromosome": "chr6",
+            "position": 18130687,
+            "chrom_hgvs_name": "g.18130687T>C; g.18130687T>G",
+            "type": "SNP",
+            "rsid": "rs1142345"
         }
     ],
     "named_alleles": [
