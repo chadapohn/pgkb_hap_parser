@@ -174,6 +174,7 @@ def parse_alleles(allele_cells, num_variants):
     for col_idx in range(VARIANT_COL, num_variants + VARIANT_COL):
         ref_allele = allele_cells.loc[0, col_idx]
         allele_cells.iloc[:, col_idx] = allele_cells.iloc[:, col_idx].replace({np.nan: ref_allele})
+  
 
         #var_type = "SNP"
         #allele_col = allele_cells.iloc[:, col_idx]
@@ -191,9 +192,11 @@ def parse_alleles(allele_cells, num_variants):
     #####
     global alleles
     alleles = allele_cells.copy()
-
+    
     allele_cells['alleles'] = allele_cells.values.tolist()
-    allele_cells['alleles'] = allele_cells['alleles'].apply(lambda l: ','.join(l[2:]))
+    print('**************************************************************************')
+    print(allele_cells['alleles'])
+    allele_cells['alleles'] = allele_cells['alleles'].apply(lambda l: ','.join(l[1:]))
     haps = allele_cells.filter([0,'alleles'], axis=1)
     haps.columns = ["name", "alleles"]
 
@@ -204,6 +207,7 @@ def parse_alleles(allele_cells, num_variants):
     return haps
 
 def parse():
+    table = pd.DataFrame()
     files = filter(lambda f: f.endswith('.xlsx'), listdir(HAPLOTYPE_TABLE_DIR))
     for file in files:
         definition_file = path.join(HAPLOTYPE_TABLE_DIR, file)
@@ -239,58 +243,64 @@ def parse():
         var_types = ','.join(var_types)
         haps["types"] = var_types
         # print(haps.loc[haps['name'] == "Hektoen"])
-        haps.to_csv(path.join(OUT_DIR, gene+'.tsv'), sep='\t', index=False)
-        
-        
-        ##########################For .json translation file #########################
+        #haps.to_csv(path.join(OUT_DIR, gene+'.tsv'), sep='\t', index=False)
+        table = table.append(haps, ignore_index=True)
 
-        # variants
-        global positions
-        chrom_hgvs_names = chrom_hgvs_names.split(",")
-        var_types = var_types.split(",")
-        rsids = rsids.split(",")
-        variants = []
-        for pos, hgvs, vtype, rsid in zip(positions, chrom_hgvs_names, var_types, rsids):
-            variants.append({
-                "chromosome": chrom,
-                "position": pos,
-                "chrom_hgvs_name": hgvs,
-                "type": vtype,
-                "rsid": rsid
-            })
-        print("variants = " + str(len(variants)))
-  
-        # named_alleles
-        global hap_names
-        hap_names = hap_names.values.tolist()
-        global alleles
-        alleles = alleles.iloc[:, VARIANT_COL:].values.tolist()
-        named_alleles = []
-
-        for name, hapal in zip(hap_names, alleles):
-            named_alleles.append({
-                "name": name,
-                "function": None,
-                "alleles": dict(zip(positions, hapal))
-            })
-
-        json_definition = {
-            "gene": gene,
-            "chromosome": chrom,
-            "variants": variants,
-            "named_alleles": named_alleles
-        }
-
-        with open(path.join(JSON_DIR, gene + "_allele_definition_table.json"), 'w') as file:
-            json.dump(json_definition, file, indent=4)
-       
         if gene == "G6PD":
             CHROM_COL = CHROM_COL - 1
             VARIANT_COL = VARIANT_COL - 1
             RSID_COL = RSID_COL - 1
+    table.to_csv(path.join(OUT_DIR, 'allele_definition.tsv'), sep='\t', index=False)
+  
+        ##########################For .json translation file #########################
+
+        # variants
+        # global positions
+        # chrom_hgvs_names = chrom_hgvs_names.split(",")
+        # var_types = var_types.split(",")
+        # rsids = rsids.split(",")
+        # variants = []
+        # for pos, hgvs, vtype, rsid in zip(positions, chrom_hgvs_names, var_types, rsids):
+        #     variants.append({
+        #         "chromosome": chrom,
+        #         "position": pos,
+        #         "chrom_hgvs_name": hgvs,
+        #         "type": vtype,
+        #         "rsid": rsid
+        #     })
+        # print("variants = " + str(len(variants)))
+  
+        # # named_alleles
+        # global hap_names
+        # hap_names = hap_names.values.tolist()
+        # global alleles
+        # alleles = alleles.iloc[:, VARIANT_COL:].values.tolist()
+        # named_alleles = []
+
+        # for name, hapal in zip(hap_names, alleles):
+        #     named_alleles.append({
+        #         "name": name,
+        #         "function": None,
+        #         "alleles": dict(zip(positions, hapal))
+        #     })
+
+        # json_definition = {
+        #     "gene": gene,
+        #     "chromosome": chrom,
+        #     "variants": variants,
+        #     "named_alleles": named_alleles
+        # }
+
+        # with open(path.join(JSON_DIR, gene + "_allele_definition_table.json"), 'w') as file:
+        #     json.dump(json_definition, file, indent=4)
+       
+        # if gene == "G6PD":
+        #     CHROM_COL = CHROM_COL - 1
+        #     VARIANT_COL = VARIANT_COL - 1
+        #     RSID_COL = RSID_COL - 1
 
         
-        positions = []
+        # positions = []
 
 if __name__ == '__main__':
     parse()
