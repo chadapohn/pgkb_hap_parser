@@ -69,7 +69,7 @@ def parse_variants(variant_cells, num_variants):
     ends = []
     chrom_hgvs_names = []
     var_types = []
-    for var_idx in range(VARIANT_COL, num_variants + 1):
+    for var_idx in range(VARIANT_COL, num_variants + VARIANT_COL):
         chrom_hgvs_name = variant_cells.loc[var_idx]
 
         matched_snp = re.match(SNP_PATTERN, chrom_hgvs_name)
@@ -194,9 +194,9 @@ def parse_alleles(allele_cells, num_variants):
     alleles = allele_cells.copy()
     
     allele_cells['alleles'] = allele_cells.values.tolist()
-    print('**************************************************************************')
-    print(allele_cells['alleles'])
-    allele_cells['alleles'] = allele_cells['alleles'].apply(lambda l: ','.join(l[1:]))
+    #print('**************************************************************************')
+    #print(allele_cells['alleles'])
+    allele_cells['alleles'] = allele_cells['alleles'].apply(lambda l: ','.join(l[VARIANT_COL:]))
     haps = allele_cells.filter([0,'alleles'], axis=1)
     haps.columns = ["name", "alleles"]
 
@@ -219,9 +219,9 @@ def parse():
         
         if gene == 'G6PD':
             global CHROM_COL, VARIANT_COL, RSID_COL
-            CHROM_COL = CHROM_COL + 1
-            VARIANT_COL = VARIANT_COL + 1
-            RSID_COL = RSID_COL + 1
+            CHROM_COL = 1
+            VARIANT_COL = 2
+            RSID_COL = 2
 
         chrom = parse_chrom(definition_table.iloc[CHROM_ROW][CHROM_COL])
         num_variants = definition_table.iloc[CHROM_ROW, VARIANT_COL:].count()
@@ -246,10 +246,10 @@ def parse():
         #haps.to_csv(path.join(OUT_DIR, gene+'.tsv'), sep='\t', index=False)
         table = table.append(haps, ignore_index=True)
 
-        if gene == "G6PD":
-            CHROM_COL = CHROM_COL - 1
-            VARIANT_COL = VARIANT_COL - 1
-            RSID_COL = RSID_COL - 1
+        
+        CHROM_COL = 0
+        VARIANT_COL = 1
+        RSID_COL = 1
     table.to_csv(path.join(OUT_DIR, 'allele_definition.tsv'), sep='\t', index=False)
   
         ##########################For .json translation file #########################
