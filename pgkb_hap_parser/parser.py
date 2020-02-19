@@ -157,7 +157,6 @@ def parse_rsids(rsid_cells, num_variants):
         else:
             rsid = ""
         rsids.append(rsid)
-
     return rsids
 
 def parse_alleles(allele_cells, num_variants):
@@ -228,6 +227,7 @@ def parse():
         chrom_hgvs_names, starts, ends, var_types = parse_variants(definition_table.iloc[VARIANT_ROW, VARIANT_COL:], num_variants)
         
         rsids = parse_rsids(definition_table.iloc[RSID_ROW, RSID_COL:num_variants+RSID_COL], num_variants)
+        print(rsids)
         haps = parse_alleles(definition_table.iloc[HAP_ROW:, HAP_COL:num_variants + VARIANT_COL], num_variants)
         haps["gene"] = gene
         haps["chrom"] = chrom
