@@ -1,3 +1,0 @@
-[console_scripts]
-pgkb_hap_parser = main:parser
-
