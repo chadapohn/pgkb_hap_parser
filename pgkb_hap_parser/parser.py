@@ -6,12 +6,10 @@ import numpy as np
 from pprint import pprint
 import json
 
-HAPLOTYPE_TABLE_DIR = path.join(path.dirname(__file__), '..', "definition", "xlsx")
-OUT_DIR = path.join(path.dirname(__file__), '..', "definition", "tsv") 
+HAPLOTYPE_TABLE_DIR = path.join(path.dirname(__file__), '..', "data", "xlsx")
+OUT_DIR = path.join(path.dirname(__file__), '..', "out") 
 
 ######
-JSON_DIR = path.join(path.dirname(__file__), '..', "definition", "json") 
-
 GENE_ROW = 0
 GENE_COL = 0
 GENE_PATTERN = "^GENE:\s*(\w+)$"
@@ -230,7 +228,7 @@ def parse():
 		CHROM_COL = 0
 		VARIANT_COL = 1
 		RSID_COL = 1
-	table.to_csv('allele_definition.tsv', sep='\t', index=False)
+	table.to_csv(path.join(OUT_DIR, 'allele_definition.tsv'), sep='\t', index=False)
 
  
 if __name__ == '__main__':
