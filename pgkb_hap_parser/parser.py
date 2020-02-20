@@ -22,10 +22,10 @@ CHROM_PATTERN = r"^.*N\w_\s*(\d+)\.\d+"
 
 VARIANT_ROW = 3
 VARIANT_COL = 1
-SNP_PATTERN = r"^[cgp]\.(\d+)[A-Z]>[A-Z]"
-SNP_INS_PATTERN = r"^[cgp]\.(\d+_?\d*)ins[A-Z]*"
-SNP_DEL_PATTERN = r"^[cgp]\.(\d+_?\d*)del[A-Z]*"
-SNP_REPEAT_PATTERN = r"^[cgp]\.(\d+)"
+SNP_PATTERN = r'^g\.(\d+)[ATCG]>[ATCG]$'
+INS_PATTERN = r'^g\.(\d+)_?(\d*)ins.+$'
+DEL_PATTERN = r'^g\.(\d+)_?(\d*)del.+$'
+# REPEAT_PATTERN = r"^[cgp]\.(\d+)"
 # SV_DEL_PATTERN = r"^delGene$"
 
 RSID_ROW = 5
@@ -63,101 +63,86 @@ def parse_chrom(chrom_cell):
 			chrom_name = "chr" + str(chrom_num)
 	return chrom_name
 
+def parse_deletion(chrom_hgvs_name):
+	match = re.match(DEL_PATTERN, chrom_hgvs_name)
+	if match:
+		start = match.group(1)
+		start = int(start) - 1
+		start = str(start)
+		if match.group(1) and not match.group(2):
+			end = match.group(1)
+		elif match.group(1) and match.group(2):
+			end = match.group(2)
+	
+		return start, end
+	else:
+		return 
+
+def parse_insertion(chrom_hgvs_name):
+	match = re.match(INS_PATTERN, chrom_hgvs_name)
+	if match:
+		start = match.group(1)
+		end = match.group(2)
+	
+		return start, end
+	else:
+		return
+
+def parse_snp(chrom_hgvs_name):
+	match = re.match(SNP_PATTERN, chrom_hgvs_name)
+	if match:
+		start = match.group(1)
+		start = int(start) - 1
+		start = str(start)
+		end = match.group(1)
+
+		return start, end
+	else:
+		return
+
 def parse_variants(variant_cells, num_variants):
-	global positions
+	chrom_hgvs_names = []
 	starts = []
 	ends = []
-	chrom_hgvs_names = []
 	var_types = []
+
 	for var_idx in range(VARIANT_COL, num_variants + VARIANT_COL):
 		chrom_hgvs_name = variant_cells.loc[var_idx]
-
-		matched_snp = re.match(SNP_PATTERN, chrom_hgvs_name)
-		matched_ins = re.match(SNP_INS_PATTERN, chrom_hgvs_name)
-		matched_del = re.match(SNP_DEL_PATTERN, chrom_hgvs_name)
-		matched_repeat = re.match(SNP_REPEAT_PATTERN, chrom_hgvs_name)
-
-
-		if matched_snp:
-			position = matched_snp.group(1)
-
-			######
-			positions.append(int(position))
-
-			start = int(position) - 1
-			end = int(position)
-			var_types.append("SNP")
-		elif matched_ins:
-			position = matched_ins.group(1)
-			if "_" in position:
-				start, end = position.split("_")
-
-				#####
-				positions.append(int(start))
-
-				start = int(start) - 1
-				end = int(end)
-			else:
-				#####
-				positions.append(int(position))
-
-				start = int(position) - 1
-				end = int(position)
-			var_types.append("INS")
-		elif matched_del:
-			# print(matched_del)
-			position = matched_del.group(1)
-			if "_" in position:
-				start, end = position.split("_")
-
-				#####
-				positions.append(int(start))
-
-				start = int(start) - 1
-				end = int(end)
-			else:
-				#####
-				positions.append(int(position))
-
-				start = int(position) - 1
-				end = int(position)
-			var_types.append("DEL")
-		elif matched_repeat:
-			position = matched_repeat.group(1)
-
-			#####
-			positions.append(int(position))
-			
-			start = int(position) - 1
-			end = int(position)
-			var_types.append("SNP") # TODO: Temporary Fix
-		else:
-			#####
-			positions.append("")
-			chrom_hgvs_name = None
-			start = None
-			end = None
-			var_types.append("")
 		chrom_hgvs_names.append(chrom_hgvs_name)
-		print(position, start, end)
+
+		if parse_deletion(chrom_hgvs_name):
+			start, end = parse_deletion(chrom_hgvs_name)
+			var_types.append('DEL')
+
+		elif parse_insertion(chrom_hgvs_name):
+			start, end = parse_insertion(chrom_hgvs_name)
+			var_types.append('INS')
+
+		elif parse_snp(chrom_hgvs_name):
+			start, end = parse_snp(chrom_hgvs_name)
+			var_types.append('SNP')
+
+		else:
+			start = "-"
+			end = "-"
+
 		starts.append(start)
 		ends.append(end)
 
 	return chrom_hgvs_names, starts, ends, var_types
 
 def parse_rsids(rsid_cells, num_variants):
-	rsids = []
-	for rsid_idx in range(RSID_COL, num_variants + 1):
-		rsid = rsid_cells.loc[rsid_idx]
-		if pd.notna(rsid):
-			match = re.match(RSID_PATTERN, rsid)
-			if match:
-				rsid = match.group()
-		else:
-			rsid = ""
-		rsids.append(rsid)
-
-	return rsids
+    rsids = []
+    for rsid_idx in range(RSID_COL, num_variants + 1):
+        rsid = rsid_cells.loc[rsid_idx]
+        if pd.notna(rsid):
+            match = re.match(RSID_PATTERN, rsid)
+            if match:
+                rsid = match.group()
+        else:
+            rsid = ""
+        rsids.append(rsid)
+    return rsids
 
 def parse_alleles(allele_cells, num_variants):
 	allele_cells.reset_index(inplace=True, drop=True)
@@ -246,56 +231,7 @@ def parse():
 		VARIANT_COL = 1
 		RSID_COL = 1
 	table.to_csv('allele_definition.tsv', sep='\t', index=False)
-  
-		##########################For .json translation file #########################
 
-		# variants
-		# global positions
-		# chrom_hgvs_names = chrom_hgvs_names.split(",")
-		# var_types = var_types.split(",")
-		# rsids = rsids.split(",")
-		# variants = []
-		# for pos, hgvs, vtype, rsid in zip(positions, chrom_hgvs_names, var_types, rsids):
-		#	 variants.append({
-		#		 "chromosome": chrom,
-		#		 "position": pos,
-		#		 "chrom_hgvs_name": hgvs,
-		#		 "type": vtype,
-		#		 "rsid": rsid
-		#	 })
-		# print("variants = " + str(len(variants)))
-  
-		# # named_alleles
-		# global hap_names
-		# hap_names = hap_names.values.tolist()
-		# global alleles
-		# alleles = alleles.iloc[:, VARIANT_COL:].values.tolist()
-		# named_alleles = []
-
-		# for name, hapal in zip(hap_names, alleles):
-		#	 named_alleles.append({
-		#		 "name": name,
-		#		 "function": None,
-		#		 "alleles": dict(zip(positions, hapal))
-		#	 })
-
-		# json_definition = {
-		#	 "gene": gene,
-		#	 "chromosome": chrom,
-		#	 "variants": variants,
-		#	 "named_alleles": named_alleles
-		# }
-
-		# with open(path.join(JSON_DIR, gene + "_allele_definition_table.json"), 'w') as file:
-		#	 json.dump(json_definition, file, indent=4)
-	   
-		# if gene == "G6PD":
-		#	 CHROM_COL = CHROM_COL - 1
-		#	 VARIANT_COL = VARIANT_COL - 1
-		#	 RSID_COL = RSID_COL - 1
-
-		
-		# positions = []
-
+ 
 if __name__ == '__main__':
 	parse()

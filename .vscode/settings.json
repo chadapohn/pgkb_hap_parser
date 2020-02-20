@@ -1,8 +1,21 @@
 {
-    "python.pythonPath": "/Users/proton/anaconda3/bin/python",
-    "workbench.colorCustomizations": {
-        "activityBar.background": "#dac656",
-        "titleBar.activeBackground": "#114B1C",
-        "titleBar.activeForeground": "#F3FCF5"
-    }
+    "editor.minimap.enabled": false,
+    "explorer.autoReveal": false, // Stop scrolling revealing active file in explorer
+    "explorer.openEditors.visible": 0, // Show/hide open editors and/or tabs
+    "files.exclude": {
+        "**/*.pyc": {
+            "when": "$(basename).py"
+        },
+        "**/__pycache__": true,
+        ".pytest_cache/": true,
+        "cpic.egg-info/": true,
+        "**/.classpath": true,
+        "**/.project": true,
+        "**/.settings": true,
+        "**/.factorypath": true
+    },
+    "python.pythonPath": "/home/cs16golf/anaconda3/envs/pgkb/bin/python",
+    "workbench.colorTheme": "Default Dark+",
+    "workbench.editor.enablePreview": false, // Setting open file in new tab(not replaced current tab)
+    "workbench.iconTheme": "vs-seti"
 }
