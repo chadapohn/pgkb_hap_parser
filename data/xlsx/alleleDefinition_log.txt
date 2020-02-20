@@ -1,0 +1,15 @@
+1/12/19 edit RYR1 : separate "or" to 2 columns "g.38499646_38499648delGAG"	and "g.38499649_38499651delGAG" 
+		    separate "or" to 2 rows "c.7039_7041delGAG" and "c.7042_7044delGAG"
+1/12/19 edit NUDT15 : edit "48037801_48037802insGAGTCG" to "g.48037801_48037802insGAGTCG"
+1/12/19 edit G6PD : merge "g.154534419_154534421delGAG" and "g.154534419G>A" to "g.154534419_154534421delGAG;g.154534419G>A"
+		    merge "g.154533015_154533038delGGGGTCGTCCAGGTACCCTTTGGT" and "g.154533031C>T" and "g.154533029A>G" and "g.154533025A>G" and "g.154533016G>T" to "g.154533015_154533038delGGGGTCGTCCAGGTACCCTTTGGT;g.154533031C>T;g.154533029A>G;g.154533025A>G;g.154533016G>T"
+		    merge "g.154532753_154532770delGGCCTTGCGCTCGTTCAG" and "g.154532765G>C/T" and "g.154532758T>C" to "g.154532753_154532770delGGCCTTGCGCTCGTTCAG;g.154532765G>C/T;g.154532758T>C"
+1/12/19 edit DPYD : edit row "c.295_298delTCAT (*7)" in column from "del" to "delTCAT"
+1/12/19 edit CYP2C9 : merge "g.94942213_94942222delAGAAATGGAA" and "g.94942216A>G" to "g.94942213_94942222delAGAAATGGAA;g.94942216A>G"
+1/12/19 edit CYP2B6 : merge "g.41016810C>A" and "g.41016810C>T" to "g.41016810C>A;g.41016810C>T"
+		      delete column "CYP2B7/CYP2B6 hybrid (crossover in intron 4; partial deletion allele)**" and "CYP2B6/CYP2B7 hybrid (crossover in intron 4; duplicated fusion allele)**" because no HGVS or position. and delete *29,*30 that related too
+15/12/19 edit CYP2C19 : Delete *37 due to partial deletion (Need other solutions)
+15/12/19 edit DPYD : convert problematic duplication allele g.97740411_97740414ATGA[1] to ordinary deletion g.97740415delATGA, g.185642_185645TCAT[1] -> g.185646delTCAT
+15/12/19 edit DPYD : g.97450067delG/g.475994delC append base C in allele definition table for each `del` that appears in haplotypes
+15/12/19 edit DPYD : convert NG bases to NC bases for all alleles.
+15/12/19 edit NUDT15 : replace "ref" to "del" for insertion variants
