@@ -98,7 +98,10 @@ def parse_snp(chrom_hgvs_name):
 	else:
 		return
 
-def parse_variants(variant_cells, num_variants):
+def parse_variants(variant_cells, num_variants, VARIANT_COL=VARIANT_COL):
+	print(CHROM_COL)
+	print(VARIANT_COL)
+	print(RSID_COL)
 	chrom_hgvs_names = []
 	starts = []
 	ends = []
@@ -205,7 +208,7 @@ def parse():
 
 		chrom = parse_chrom(definition_table.iloc[CHROM_ROW][CHROM_COL])
 		num_variants = definition_table.iloc[CHROM_ROW, VARIANT_COL:].count()
-		chrom_hgvs_names, starts, ends, var_types = parse_variants(definition_table.iloc[VARIANT_ROW, VARIANT_COL:], num_variants)
+		chrom_hgvs_names, starts, ends, var_types = parse_variants(definition_table.iloc[VARIANT_ROW, VARIANT_COL:], num_variants, VARIANT_COL)
 		
 		rsids = parse_rsids(definition_table.iloc[RSID_ROW, RSID_COL:num_variants+RSID_COL], num_variants)
 		haps = parse_alleles(definition_table.iloc[HAP_ROW:, HAP_COL:num_variants + VARIANT_COL], num_variants)
