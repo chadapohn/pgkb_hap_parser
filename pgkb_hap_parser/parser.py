@@ -20,7 +20,7 @@ CHROM_PATTERN = r"^.*N\w_\s*(\d+)\.\d+"
 
 VARIANT_ROW = 3
 VARIANT_COL = 1
-SNP_PATTERN = r'^g\.(\d+)[ATCG]>[ATCG]$'
+SNP_PATTERN = r'^g\.(\d+)[ATCG]>([ATCG]|[ATCG]\/[ATCG])$'
 INS_PATTERN = r'^g\.(\d+)_?(\d*)ins.+$'
 DEL_PATTERN = r'^g\.(\d+)_?(\d*)del.+$'
 # REPEAT_PATTERN = r"^[cgp]\.(\d+)"
