@@ -15,4 +15,9 @@ def test_parse_insertion():
 	assert parse_insertion(multiple) == ("48037801", "48037802")
 
 def test_parse_snp():
+	# Diallelic SNPs
 	assert parse_snp("g.48037798G>A") == ("48037797", "48037798")
+
+	# Multiallelic SNPs
+	assert parse_snp("g.41016810C>A/T") == ("41016809", "41016810") # CYP2B6
+	
