@@ -4,7 +4,7 @@ def test_parse_deletion():
 	single = "g.94949283delA" # CYP2C9
 	assert parse_deletion(single) == ("94949282", "94949283")
 
-	multiple = "g.94942213_94942222delAGAAATGGAA;g.94942216A>G" # CYP2C9
+	multiple = "g.94942213_94942222delAGAAATGGAA" # CYP2C9
 	assert parse_deletion(multiple) == ("94942212", "94942222")
 
 def test_parse_insertion():
@@ -16,7 +16,7 @@ def test_parse_insertion():
 
 def test_parse_snp():
 	# Diallelic SNPs
-	assert parse_snp("g.48037798G>A") == ("48037797", "48037798")
+	assert parse_snp("g.48037798G>A") == ("48037797", "48037798") #NUDT15
 
 	# Multiallelic SNPs
 	assert parse_snp("g.41016810C>A/T") == ("41016809", "41016810") # CYP2B6
