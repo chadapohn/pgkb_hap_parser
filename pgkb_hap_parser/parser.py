@@ -16,7 +16,7 @@ GENE_PATTERN = r'^GENE:\s*(\w+)$'
 
 CHROM_ROW = 3
 CHROM_COL = 0
-CHROM_PATTERN = r"^.*N\w_\s*(\d+)\.\d+"
+CHROM_PATTERN = r"chromosome\s(\w+)"
 
 VARIANT_ROW = 3
 VARIANT_COL = 1
@@ -50,15 +50,10 @@ def parse_gene(gene_cell):
 
 def parse_chrom(chrom_cell):
 	chrom_name = None
-	match = re.match(CHROM_PATTERN, chrom_cell)
+	match = re.search(CHROM_PATTERN, chrom_cell)
+
 	if match:
-		chrom_num = int(match.group(1))
-		if chrom_num == 23:
-			chrom_name = "chrX"
-		elif chrom_num == 24:
-			chrom_name = "chrY"
-		else:
-			chrom_name = "chr" + str(chrom_num)
+		chrom_name = "chr" + match.group(1)
 	return chrom_name
 
 def parse_deletion(chrom_hgvs_name):
