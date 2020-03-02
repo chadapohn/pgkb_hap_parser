@@ -12,7 +12,7 @@ OUT_DIR = path.join(path.dirname(__file__), '..', "out")
 ######
 GENE_ROW = 0
 GENE_COL = 0
-GENE_PATTERN = "^GENE:\s*(\w+)$"
+GENE_PATTERN = r'^GENE:\s*(\w+)$'
 
 CHROM_ROW = 3
 CHROM_COL = 0
@@ -20,7 +20,7 @@ CHROM_PATTERN = r"^.*N\w_\s*(\d+)\.\d+"
 
 VARIANT_ROW = 3
 VARIANT_COL = 1
-SNP_PATTERN = r'^g\.(\d+)[ATCG]>([ATCG]|[ATCG]\/[ATCG])$'
+SNP_PATTERN = r'^g\.(\d+)[A-Z]>([A-Z]|[ATCG](\/[A-Z])*)$'
 INS_PATTERN = r'^g\.(\d+)_?(\d*)ins.+$'
 DEL_PATTERN = r'^g\.(\d+)_?(\d*)del.+$'
 # REPEAT_PATTERN = r"^[cgp]\.(\d+)"
@@ -121,12 +121,16 @@ def parse_variants(variant_cells, num_variants, VARIANT_COL=VARIANT_COL):
 			var_types.append('SNP')
 
 		else:
+			print(10*"=")
+			print(chrom_hgvs_name)
 			start = "-"
 			end = "-"
 
 		starts.append(start)
 		ends.append(end)
 
+	_sorted_variants = sorted(zip(starts, ends, chrom_hgvs_names, var_types), key=lambda x: int(x[0]))
+	starts, ends, chrom_hgvs_names, var_types = zip(*_sorted_variants)
 	return chrom_hgvs_names, starts, ends, var_types
 
 def parse_rsids(rsid_cells, num_variants):
@@ -148,8 +152,6 @@ def parse_alleles(gene, allele_cells, num_variants):
 		VARIANT_COL = 2
 
 	allele_cells.reset_index(inplace=True, drop=True)
-	#var_types =
-
 	
 	if allele_cells.iloc[:, 0].str.contains("NOTES").eq(False).all():
 		hap_end_row = len(allele_cells.index)
@@ -161,19 +163,6 @@ def parse_alleles(gene, allele_cells, num_variants):
 		ref_allele = allele_cells.loc[0, col_idx]
 		allele_cells.iloc[:, col_idx] = allele_cells.iloc[:, col_idx].replace({np.nan: ref_allele})
   
-
-		#var_type = "SNP"
-		#allele_col = allele_cells.iloc[:, col_idx]
-		#startswith_del_alleles = set(allele_col.loc[allele_col.str.startswith("del")])
-		#if len(startswith_del_alleles) > 0:
-			#for a in startswith_del_alleles:
-				#if a != "delGene":
-					#if ref_allele == a:
-						#var_type = "INS"
-					#e
-					# lse: var_type = ("DEL")
-					#break
-		#var_types.append(var_type)
 	#####
 	global alleles
 	alleles = allele_cells.copy()
@@ -182,9 +171,6 @@ def parse_alleles(gene, allele_cells, num_variants):
 	allele_cells['alleles'] = allele_cells['alleles'].apply(lambda l: ','.join(map(str, l[VARIANT_COL:])))
 	haps = allele_cells.filter([0,'alleles'], axis=1)
 	haps.columns = ["name", "alleles"]
-
-	print(10*'=')
-	print(haps)
 
 	#####
 	global hap_names
@@ -211,8 +197,12 @@ def parse():
 		chrom_hgvs_names, starts, ends, var_types = parse_variants(definition_table.iloc[VARIANT_ROW, VARIANT_COL:], num_variants, VARIANT_COL)
 		
 		rsids = parse_rsids(definition_table.iloc[RSID_ROW, RSID_COL:num_variants+RSID_COL], num_variants)
-		print(gene, VARIANT_COL)
 		haps = parse_alleles(gene, definition_table.iloc[HAP_ROW:, HAP_COL:num_variants + VARIANT_COL], num_variants)
+		
+
+		#################
+		# Arrange tables#
+		#################
 		haps["gene"] = gene
 		haps["chrom"] = chrom
 		haps["num_variants"] = num_variants
@@ -232,6 +222,7 @@ def parse():
 		CHROM_COL = 0
 		VARIANT_COL = 1
 		RSID_COL = 1
+
 	table.to_csv(path.join(OUT_DIR, 'allele_definition.tsv'), sep='\t', index=False)
 
  

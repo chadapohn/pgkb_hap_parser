@@ -30,7 +30,7 @@ def test_parse_alleles():
     exp = pd.DataFrame(
         data={
             'name': ['Reference', 'c.520C>T', 'c.3257G>A'],
-            'alleles': ['G,C', 'A,C', 'G,T']
+            'alleles': ['C,G', 'C,A', 'T,G']
         }
     )
     assert_frame_equal(obs, exp)
