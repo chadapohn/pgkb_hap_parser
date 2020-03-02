@@ -6,7 +6,7 @@ import numpy as np
 from pprint import pprint
 import json
 
-HAPLOTYPE_TABLE_DIR = path.join(path.dirname(__file__), '..', "data", "xlsx")
+HAPLOTYPE_TABLE_DIR = path.join(path.dirname(__file__), '..', "data", "allele_definition_table")
 OUT_DIR = path.join(path.dirname(__file__), '..', "out") 
 
 ######
@@ -99,9 +99,6 @@ def parse_snp(chrom_hgvs_name):
 		return
 
 def parse_variants(variant_cells, num_variants, VARIANT_COL=VARIANT_COL):
-	print(CHROM_COL)
-	print(VARIANT_COL)
-	print(RSID_COL)
 	chrom_hgvs_names = []
 	starts = []
 	ends = []
@@ -145,7 +142,11 @@ def parse_rsids(rsid_cells, num_variants):
         rsids.append(rsid)
     return rsids
 
-def parse_alleles(allele_cells, num_variants):
+def parse_alleles(gene, allele_cells, num_variants):
+	if gene == 'G6PD':
+		global VARIANT_COL
+		VARIANT_COL = 2
+
 	allele_cells.reset_index(inplace=True, drop=True)
 	#var_types =
 
@@ -173,20 +174,21 @@ def parse_alleles(allele_cells, num_variants):
 					# lse: var_type = ("DEL")
 					#break
 		#var_types.append(var_type)
-
 	#####
 	global alleles
 	alleles = allele_cells.copy()
 	
-	allele_cells['alleles'] = allele_cells.values.tolist()
-	allele_cells['alleles'] = allele_cells['alleles'].apply(lambda l: ','.join(l[VARIANT_COL:]))
+	allele_cells['alleles'] = allele_cells.values.tolist()	
+	allele_cells['alleles'] = allele_cells['alleles'].apply(lambda l: ','.join(map(str, l[VARIANT_COL:])))
 	haps = allele_cells.filter([0,'alleles'], axis=1)
 	haps.columns = ["name", "alleles"]
+
+	print(10*'=')
+	print(haps)
 
 	#####
 	global hap_names
 	hap_names = haps['name']
-
 	return haps
 
 def parse():
@@ -197,8 +199,6 @@ def parse():
 		definition_table = pd.read_excel(definition_file, header=None)
 		
 		gene = parse_gene(definition_table.iloc[GENE_ROW][GENE_COL])
-
-		print(gene)
 		
 		if gene == 'G6PD':
 			global CHROM_COL, VARIANT_COL, RSID_COL
@@ -211,7 +211,8 @@ def parse():
 		chrom_hgvs_names, starts, ends, var_types = parse_variants(definition_table.iloc[VARIANT_ROW, VARIANT_COL:], num_variants, VARIANT_COL)
 		
 		rsids = parse_rsids(definition_table.iloc[RSID_ROW, RSID_COL:num_variants+RSID_COL], num_variants)
-		haps = parse_alleles(definition_table.iloc[HAP_ROW:, HAP_COL:num_variants + VARIANT_COL], num_variants)
+		print(gene, VARIANT_COL)
+		haps = parse_alleles(gene, definition_table.iloc[HAP_ROW:, HAP_COL:num_variants + VARIANT_COL], num_variants)
 		haps["gene"] = gene
 		haps["chrom"] = chrom
 		haps["num_variants"] = num_variants
