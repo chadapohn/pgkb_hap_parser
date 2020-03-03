@@ -15,4 +15,4 @@ def test_parse_insertion():
 	assert parse_insertion(multiple) == ("48037801", "48037802")
 
 def test_parse_snp():
-	assert parse_snp("g.48037798G>A") == ("48037797", "48037798")
+	assert parse_snp("g.48037798G>A") == ("48037797", "48037798") # NUDT15
