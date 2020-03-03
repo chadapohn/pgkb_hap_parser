@@ -6,21 +6,21 @@ import numpy as np
 from pprint import pprint
 import json
 
-HAPLOTYPE_TABLE_DIR = path.join(path.dirname(__file__), '..', "data", "xlsx")
+HAPLOTYPE_TABLE_DIR = path.join(path.dirname(__file__), '..', "data", "allele_definition_table")
 OUT_DIR = path.join(path.dirname(__file__), '..', "out") 
 
 ######
 GENE_ROW = 0
 GENE_COL = 0
-GENE_PATTERN = "^GENE:\s*(\w+)$"
+GENE_PATTERN = r'^GENE:\s*(\w+)$'
 
 CHROM_ROW = 3
 CHROM_COL = 0
-CHROM_PATTERN = r"^.*N\w_\s*(\d+)\.\d+"
+CHROM_PATTERN = r"chromosome\s(\w+)"
 
 VARIANT_ROW = 3
 VARIANT_COL = 1
-SNP_PATTERN = r'^g\.(\d+)[ATCG]>[ATCG]$'
+SNP_PATTERN = r'^g\.(\d+)[A-Z]>([A-Z]|[ATCG](\/[A-Z])*)$'
 INS_PATTERN = r'^g\.(\d+)_?(\d*)ins.+$'
 DEL_PATTERN = r'^g\.(\d+)_?(\d*)del.+$'
 # REPEAT_PATTERN = r"^[cgp]\.(\d+)"
@@ -50,15 +50,10 @@ def parse_gene(gene_cell):
 
 def parse_chrom(chrom_cell):
 	chrom_name = None
-	match = re.match(CHROM_PATTERN, chrom_cell)
+	match = re.search(CHROM_PATTERN, chrom_cell)
+
 	if match:
-		chrom_num = int(match.group(1))
-		if chrom_num == 23:
-			chrom_name = "chrX"
-		elif chrom_num == 24:
-			chrom_name = "chrY"
-		else:
-			chrom_name = "chr" + str(chrom_num)
+		chrom_name = "chr" + match.group(1)
 	return chrom_name
 
 def parse_deletion(chrom_hgvs_name):
@@ -98,7 +93,7 @@ def parse_snp(chrom_hgvs_name):
 	else:
 		return
 
-def parse_variants(variant_cells, num_variants):
+def parse_variants(variant_cells, num_variants, VARIANT_COL=VARIANT_COL):
 	chrom_hgvs_names = []
 	starts = []
 	ends = []
@@ -121,12 +116,16 @@ def parse_variants(variant_cells, num_variants):
 			var_types.append('SNP')
 
 		else:
+			print(10*"=")
+			print(chrom_hgvs_name)
 			start = "-"
 			end = "-"
 
 		starts.append(start)
 		ends.append(end)
 
+	_sorted_variants = sorted(zip(starts, ends, chrom_hgvs_names, var_types), key=lambda x: int(x[0]))
+	starts, ends, chrom_hgvs_names, var_types = zip(*_sorted_variants)
 	return chrom_hgvs_names, starts, ends, var_types
 
 def parse_rsids(rsid_cells, num_variants):
@@ -142,10 +141,12 @@ def parse_rsids(rsid_cells, num_variants):
         rsids.append(rsid)
     return rsids
 
-def parse_alleles(allele_cells, num_variants):
-	allele_cells.reset_index(inplace=True, drop=True)
-	#var_types =
+def parse_alleles(gene, allele_cells, num_variants):
+	if gene == 'G6PD':
+		global VARIANT_COL
+		VARIANT_COL = 2
 
+	allele_cells.reset_index(inplace=True, drop=True)
 	
 	if allele_cells.iloc[:, 0].str.contains("NOTES").eq(False).all():
 		hap_end_row = len(allele_cells.index)
@@ -157,33 +158,18 @@ def parse_alleles(allele_cells, num_variants):
 		ref_allele = allele_cells.loc[0, col_idx]
 		allele_cells.iloc[:, col_idx] = allele_cells.iloc[:, col_idx].replace({np.nan: ref_allele})
   
-
-		#var_type = "SNP"
-		#allele_col = allele_cells.iloc[:, col_idx]
-		#startswith_del_alleles = set(allele_col.loc[allele_col.str.startswith("del")])
-		#if len(startswith_del_alleles) > 0:
-			#for a in startswith_del_alleles:
-				#if a != "delGene":
-					#if ref_allele == a:
-						#var_type = "INS"
-					#e
-					# lse: var_type = ("DEL")
-					#break
-		#var_types.append(var_type)
-
 	#####
 	global alleles
 	alleles = allele_cells.copy()
 	
-	allele_cells['alleles'] = allele_cells.values.tolist()
-	allele_cells['alleles'] = allele_cells['alleles'].apply(lambda l: ','.join(l[VARIANT_COL:]))
+	allele_cells['alleles'] = allele_cells.values.tolist()	
+	allele_cells['alleles'] = allele_cells['alleles'].apply(lambda l: ','.join(map(str, l[VARIANT_COL:])))
 	haps = allele_cells.filter([0,'alleles'], axis=1)
 	haps.columns = ["name", "alleles"]
 
 	#####
 	global hap_names
 	hap_names = haps['name']
-
 	return haps
 
 def parse():
@@ -194,8 +180,6 @@ def parse():
 		definition_table = pd.read_excel(definition_file, header=None)
 		
 		gene = parse_gene(definition_table.iloc[GENE_ROW][GENE_COL])
-
-		print(gene)
 		
 		if gene == 'G6PD':
 			global CHROM_COL, VARIANT_COL, RSID_COL
@@ -205,10 +189,15 @@ def parse():
 
 		chrom = parse_chrom(definition_table.iloc[CHROM_ROW][CHROM_COL])
 		num_variants = definition_table.iloc[CHROM_ROW, VARIANT_COL:].count()
-		chrom_hgvs_names, starts, ends, var_types = parse_variants(definition_table.iloc[VARIANT_ROW, VARIANT_COL:], num_variants)
+		chrom_hgvs_names, starts, ends, var_types = parse_variants(definition_table.iloc[VARIANT_ROW, VARIANT_COL:], num_variants, VARIANT_COL)
 		
 		rsids = parse_rsids(definition_table.iloc[RSID_ROW, RSID_COL:num_variants+RSID_COL], num_variants)
-		haps = parse_alleles(definition_table.iloc[HAP_ROW:, HAP_COL:num_variants + VARIANT_COL], num_variants)
+		haps = parse_alleles(gene, definition_table.iloc[HAP_ROW:, HAP_COL:num_variants + VARIANT_COL], num_variants)
+		
+
+		#################
+		# Arrange tables#
+		#################
 		haps["gene"] = gene
 		haps["chrom"] = chrom
 		haps["num_variants"] = num_variants
@@ -228,6 +217,7 @@ def parse():
 		CHROM_COL = 0
 		VARIANT_COL = 1
 		RSID_COL = 1
+
 	table.to_csv(path.join(OUT_DIR, 'allele_definition.tsv'), sep='\t', index=False)
 
  
