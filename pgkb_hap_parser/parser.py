@@ -85,8 +85,6 @@ def parse_snp(chrom_hgvs_name):
 	match = re.match(SNP_PATTERN, chrom_hgvs_name)
 	if match:
 		start = match.group(1)
-		start = int(start) - 1
-		start = str(start)
 		end = match.group(1)
 
 		return start, end
@@ -178,6 +176,8 @@ def parse():
 	for file in files:
 		definition_file = path.join(HAPLOTYPE_TABLE_DIR, file)
 		definition_table = pd.read_excel(definition_file, header=None)
+		definition_table = definition_table.sort_values(axis=1, by=3, na_position='first')
+		definition_table.columns = range(definition_table.shape[1])
 		
 		gene = parse_gene(definition_table.iloc[GENE_ROW][GENE_COL])
 		
@@ -214,9 +214,9 @@ def parse():
 	
 		
 	
-		#################
-		# Arrange tables#
-		#################
+		##################
+		# Arrange tables #
+		##################
 		# haps["gene"] = gene
 		# haps["chrom"] = chrom
 		# haps["num_variants"] = num_variants
