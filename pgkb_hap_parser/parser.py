@@ -128,7 +128,7 @@ def parse_variants(variant_cells, num_variants, VARIANT_COL=VARIANT_COL):
 
 def parse_rsids(rsid_cells, num_variants):
     rsids = []
-    for rsid_idx in range(RSID_COL, num_variants + 1):
+    for rsid_idx in range(RSID_COL, num_variants):
         rsid = rsid_cells.loc[rsid_idx]
         if pd.notna(rsid):
             match = re.match(RSID_PATTERN, rsid)
@@ -190,8 +190,11 @@ def parse():
 		chrom = parse_chrom(definition_table.iloc[CHROM_ROW][CHROM_COL])
 		num_variants = definition_table.iloc[CHROM_ROW, VARIANT_COL:].count()
 		chrom_hgvs_names, starts, ends, var_types = parse_variants(definition_table.iloc[VARIANT_ROW, VARIANT_COL:], num_variants, VARIANT_COL)
-		rsids = parse_rsids(definition_table.iloc[RSID_ROW, RSID_COL:num_variants+RSID_COL], num_variants)
-		# haps, hap_end_row = parse_alleles(gene, definition_table.iloc[HAP_ROW:, HAP_COL:num_variants + VARIANT_COL], num_variants)
+		if gene == 'G6PD':
+			rsids = parse_rsids(definition_table.iloc[RSID_ROW, RSID_COL:num_variants+RSID_COL], num_variants + 2)
+		else:
+			rsids = parse_rsids(definition_table.iloc[RSID_ROW, RSID_COL:num_variants+RSID_COL], num_variants + 1)
+		haps, hap_end_row = parse_alleles(gene, definition_table.iloc[HAP_ROW:, HAP_COL:num_variants + VARIANT_COL], num_variants)
 
 		print(gene)
 		cells = definition_table.iloc[HAP_ROW:, HAP_COL:num_variants + VARIANT_COL]
@@ -217,27 +220,27 @@ def parse():
 		##################
 		# Arrange tables #
 		##################
-		# haps["gene"] = gene
-		# haps["chrom"] = chrom
-		# haps["num_variants"] = num_variants
-		# starts = ','.join(map(str, starts))
-		# haps["starts"] = starts
-		# ends = ','.join(map(str, ends))
-		# haps["ends"] = ends
-		# chrom_hgvs_names = ','.join(chrom_hgvs_names)
-		# haps["chrom_hgvs_names"] = chrom_hgvs_names
-		# rsids = ','.join(rsids)
-		# haps["rsids"] = rsids
-		# var_types = ','.join(var_types)
-		# haps["types"] = var_types
-		# table = table.append(haps, ignore_index=True)
+		haps["gene"] = gene
+		haps["chrom"] = chrom
+		haps["num_variants"] = num_variants
+		starts = ','.join(map(str, starts))
+		haps["starts"] = starts
+		ends = ','.join(map(str, ends))
+		haps["ends"] = ends
+		chrom_hgvs_names = ','.join(chrom_hgvs_names)
+		haps["chrom_hgvs_names"] = chrom_hgvs_names
+		rsids = ','.join(rsids)
+		haps["rsids"] = rsids
+		var_types = ','.join(var_types)
+		haps["types"] = var_types
+		table = table.append(haps, ignore_index=True)
 
 		
 		CHROM_COL = 0
 		VARIANT_COL = 1
 		RSID_COL = 1
 
-	# table.to_csv(path.join(OUT_DIR, 'allele.definitions.tsv'), sep='\t', index=False)
+	table.to_csv(path.join(OUT_DIR, 'allele.definitions.tsv'), sep='\t', index=False)
 
  
 if __name__ == '__main__':
