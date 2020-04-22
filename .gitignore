@@ -1,14 +1,19 @@
-# Python
+# Compiled source
 *.pyc
 **/*.pyc
-__pycache__/*
-**/__pycache__/*
-*.egg-info
 
-# OS 
+# OS generated files
 .DS_Store
 **/.DS_Store
 
-# IDE
+./anaconda*
+.qt*
+.python*
+
 .vscode
 
+__pycache__/*
+
+build/
+.cache
+.pytest_cache

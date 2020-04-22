@@ -23,4 +23,4 @@ def test_parse_snp():
 	# Multiallelic SNPs
 	assert parse_snp("g.41016810C>A/T") == ("41016809", "41016810") # CYP2B6
 	assert parse_snp("g.41004406G>A/C/T") == ("41004405", "41004406")
->>>>>>> f0344dc08ba7d8934a846b7c5a2f9b89ec7a83ed:tests/test_snp_events.py
+
