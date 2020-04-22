@@ -1,4 +1,0 @@
-           0    1    2
-7  Reference    G    C
-8   c.520C>T    A  NaN
-9  c.3257G>A  NaN    T
