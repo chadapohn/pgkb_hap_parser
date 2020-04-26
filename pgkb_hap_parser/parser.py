@@ -225,7 +225,7 @@ def parse():
 			round_starts = [round(it) for it in starts]
 			round_ends = [round(it) for it in ends]
 
-			allele_definitions = allele_definitions.append(pd.DataFrame(data={"name":named_alleles, 
+			definition = pd.DataFrame(data={"name":named_alleles, 
 				"gene":gene, 
 				"chrom":chrom,
 				"num_variants": num_variants,
@@ -234,11 +234,33 @@ def parse():
 				"chrom_hgvs_names": ','.join(map(str, hgvs)),
 				"rsids": ','.join(map(str, rsids)),
 				"var_types": ','.join(map(str, var_types)),
-				"alleles": concat_alleles
-				}), ignore_index=True)
-
+				"alleles": concat_alleles})
+			
+			# new_definition = pd.DataFrame()
+			# new_definition = definition.apply(extract_iupac, axis=1)
+	
+			allele_definitions = allele_definitions.append(definition)
+		
 		allele_definitions.to_csv(path.join(out_dir, 'allele_definitions.tsv'), sep='\t', index=False)
 
  
 if __name__ == '__main__':
 	parse()
+
+# def extract_iupac(row):
+# 	if '[' in row['alleles']:
+# 		gene = row['gene']
+# 		name = row['name']
+# 		alleles = row['alleles'].split(',')
+# 		for idx, allele in enumerate(alleles):
+# 			if '[' in allele:
+# 				# print(gene, name, idx, allele, list(allele[1:-1]))
+# 				iupac_bases = list(allele[1:-1])
+# 				for base in enumerate(iupac_bases):
+# 					decoded_alleles = ','.join(alleles[0:idx]) + ',' + base + ',' + ','.join(alleles[idx+1:-1])
+# 					print(decoded_alleles)
+
+# 	else:
+# 		return row	
+	
+	
