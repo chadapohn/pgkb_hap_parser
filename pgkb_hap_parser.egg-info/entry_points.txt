@@ -1,3 +1,3 @@
 [console_scripts]
-pgkb_hap_parser = pgkb_hap_parser.parser:parse
+pgkb_hap_parser = src.pgkb_hap_parser.parser:parse
 
