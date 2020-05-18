@@ -71,7 +71,7 @@ def parse():
             haplotype_end_row = delimiter_df.loc[gene, "haplotype_end_row"]
             haplotype_start_col = delimiter_df.loc[gene, "haplotype_start_col"]
             haplotype_end_col = delimiter_df.loc[gene, "haplotype_end_col"]
-            haplotype_cell = allele_definition_table_df.iloc[haplotype_start_row:haplotype_end_row, haplotype_start_col:haplotype_end_row]
+            haplotype_cell = allele_definition_table_df.iloc[haplotype_start_row:haplotype_end_row, haplotype_start_col:haplotype_end_col]
             haplotype_extract_iupac, name_extract_iupac, variant_extract_iupac = get_haplotype_name_variant_extract_iupac(haplotype_cell)
             
             assert len(hgvs) == len(start) == len(end) == len(variant_type) == len(rsid) == len(variant_extract_iupac[0])
