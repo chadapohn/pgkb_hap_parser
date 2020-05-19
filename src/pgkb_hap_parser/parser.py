@@ -55,6 +55,9 @@ def parse():
                 print(f"not have information about gene \"{gene}\" in delimiter.tsv, please add information before and try it again.")
                 exit()
 
+            allele_definition_table_df.sort_values(axis=1, by=int(delimiter_df.loc[gene, "hgvs_row"]), inplace=True)
+            allele_definition_table_df.columns = range(allele_definition_table_df.shape[1])
+
             hgvs_row = delimiter_df.loc[gene, "hgvs_row"]
             hgvs_start_col = delimiter_df.loc[gene, "hgvs_start_col"]
             hgvs_end_col = delimiter_df.loc[gene, "hgvs_end_col"]
