@@ -46,10 +46,6 @@ def parse():
             gene_cell = allele_definition_table_df.iloc[gene_row, gene_col]
             gene = get_gene(gene_cell)
 
-            if gene == "CYP2D6":
-                allele_definition_table_df.drop([124, 125, 126, 127, 128], axis=1, inplace=True)
-                allele_definition_table_df.columns = range(allele_definition_table_df.shape[1])
-
             try:
                 chromosome_row = delimiter_df.loc[gene, "chromosome_row"]
                 chromosome_col = delimiter_df.loc[gene, "chromosome_col"]
@@ -58,6 +54,11 @@ def parse():
             except:
                 print(f"not have information about gene \"{gene}\" in delimiter.tsv, please add information before and try it again.")
                 exit()
+
+            #  manual drop column for CYP2D6
+            if gene == "CYP2D6":
+                allele_definition_table_df.drop([124, 125, 126, 127, 128], axis=1, inplace=True)
+                allele_definition_table_df.columns = range(allele_definition_table_df.shape[1])
 
             allele_definition_table_df.sort_values(axis=1, by=int(delimiter_df.loc[gene, "hgvs_row"]), inplace=True, na_position="first")
             allele_definition_table_df.columns = range(allele_definition_table_df.shape[1])
@@ -79,9 +80,12 @@ def parse():
             haplotype_start_col = delimiter_df.loc[gene, "haplotype_start_col"]
             haplotype_end_col = delimiter_df.loc[gene, "haplotype_end_col"]
             haplotype_cell = allele_definition_table_df.iloc[haplotype_start_row:haplotype_end_row, haplotype_start_col:haplotype_end_col]
+            
+            # manual drop column for G6PD
             if gene == "G6PD":
                 haplotype_cell.drop([1], axis=1, inplace=True)
                 haplotype_cell.columns = range(haplotype_cell.shape[1])
+            
             haplotype_extract_iupac, name_extract_iupac, variant_extract_iupac = get_haplotype_name_variant_extract_iupac(haplotype_cell)
             
             assert len(hgvs) == len(start) == len(end) == len(variant_type) == len(rsid) == len(variant_extract_iupac[0])
