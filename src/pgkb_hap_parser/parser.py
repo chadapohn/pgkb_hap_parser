@@ -55,7 +55,7 @@ def parse():
                 print(f"not have information about gene \"{gene}\" in delimiter.tsv, please add information before and try it again.")
                 exit()
 
-            #  manual drop column for CYP2D6
+            # manual drop column for CYP2D6
             if gene == "CYP2D6":
                 allele_definition_table_df.drop([124, 125, 126, 127, 128], axis=1, inplace=True)
                 allele_definition_table_df.columns = range(allele_definition_table_df.shape[1])
