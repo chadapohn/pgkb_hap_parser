@@ -9,6 +9,6 @@ setup(
     entry_points = {
         "console_scripts": [
             "pgkb_hap_parser = src.pgkb_hap_parser.parser:parse",
-        ],
-    },
+        ]
+    }
 )

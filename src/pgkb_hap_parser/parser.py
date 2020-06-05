@@ -17,8 +17,8 @@ def parse():
     subparsers = parser.add_subparsers(dest="subparser_name")
 
     parser_parse = subparsers.add_parser("parse")
-    parser_parse.add_argument("-d", "--delimiter", help="Path to the delimiter file", required=True)
     parser_parse.add_argument("-a", "--allele_definition_table", help="Path to the allele definition table directory", required=True)
+    parser_parse.add_argument("-d", "--delimiter", help="Path to the delimiter file", required=True)
     parser_parse.add_argument("-o", "--output", help="Path to the output directory", required=True)
     
     args = parser.parse_args()
